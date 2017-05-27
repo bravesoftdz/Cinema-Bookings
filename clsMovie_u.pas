@@ -30,8 +30,8 @@ begin
     end;
   for i := 1 to 3 do
     begin
-      Dates[i] := Copy(sDates, Pos(',', sDates)+1, 2) + ':' + Copy(sDates, Pos(',', sDates)+3, 2);
-      Delete(sDates, Pos(',', sDates)+1, 5);
+      Dates[i] := Copy(sDates, Pos(',', sDates)+1, 2) + '/' + Copy(sDates, Pos(',', sDates)+3, 2) + '/' + Copy(sDates, Pos(',', sDates)+5, 2);
+      Delete(sDates, Pos(',', sDates)+1, 7);
     end;
 
 

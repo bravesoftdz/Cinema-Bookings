@@ -213,7 +213,7 @@ object frmCinemaBookings: TfrmCinemaBookings
     object tsUpcoming: TTabSheet
       Caption = 'Upcomming'
       ImageIndex = 2
-      object GroupBox1: TGroupBox
+      object gbMovies: TGroupBox
         Left = 3
         Top = 3
         Width = 398
@@ -326,8 +326,26 @@ object frmCinemaBookings: TfrmCinemaBookings
           TabOrder = 0
           Zoom = 100
         end
+        object btnLeft: TButton
+          Left = 201
+          Top = 184
+          Width = 94
+          Height = 32
+          Caption = '<'
+          TabOrder = 1
+          OnClick = btnLeftClick
+        end
+        object btnRight: TButton
+          Left = 293
+          Top = 184
+          Width = 94
+          Height = 32
+          Caption = '>'
+          TabOrder = 2
+          OnClick = btnRightClick
+        end
       end
-      object GroupBox2: TGroupBox
+      object gbBookings: TGroupBox
         Left = 407
         Top = 3
         Width = 185
@@ -346,7 +364,7 @@ object frmCinemaBookings: TfrmCinemaBookings
           Width = 179
           Height = 29
           TabOrder = 0
-          Text = 'cbDate'
+          Text = 'Date'
         end
         object cbTime: TComboBox
           Left = 3
@@ -354,7 +372,7 @@ object frmCinemaBookings: TfrmCinemaBookings
           Width = 179
           Height = 29
           TabOrder = 1
-          Text = 'cbTime'
+          Text = 'Time'
         end
         object btnBook: TButton
           Left = 3

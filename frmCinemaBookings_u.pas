@@ -39,20 +39,25 @@ type
     imgFeaturedStar: TImage;
     tsAccount: TTabSheet;
     tsUpcoming: TTabSheet;
-    GroupBox1: TGroupBox;
+    gbMovies: TGroupBox;
     imgCoverImage: TImage;
     lblMovieTitle: TLabel;
     redMovieDescription: TRichEdit;
     imgMovieStar: TImage;
     lblMovieRating: TLabel;
-    GroupBox2: TGroupBox;
+    gbBookings: TGroupBox;
     cbDate: TComboBox;
     cbTime: TComboBox;
     btnBook: TButton;
     tblMoviesTimes: TWideStringField;
     tblMoviesDates: TWideStringField;
+    btnLeft: TButton;
+    btnRight: TButton;
     procedure FormCreate(Sender: TObject);
     procedure btnMenuViewMoviesClick(Sender: TObject);
+    procedure DisplayMovie(iMovie: Integer);
+    procedure btnLeftClick(Sender: TObject);
+    procedure btnRightClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -65,13 +70,45 @@ var
   User : TUser;
   FeaturedMovie : TMovie;
   Movies : TMovies;
+  iCurrentMovie, iMovieCount : Integer;
 implementation
 
 {$R *.dfm}
 
+procedure TfrmCinemaBookings.btnLeftClick(Sender: TObject);
+begin
+  if NOT(iCurrentMovie = 1) then
+    iCurrentMovie := iCurrentMovie - 1;
+  DisplayMovie(iCurrentMovie);
+end;
+
 procedure TfrmCinemaBookings.btnMenuViewMoviesClick(Sender: TObject);
 begin
   pcMainView.TabIndex := 2;
+end;
+
+procedure TfrmCinemaBookings.btnRightClick(Sender: TObject);
+begin
+  if NOT(iCurrentMovie = iMovieCount) then
+    iCurrentMovie := iCurrentMovie + 1;
+  DisplayMovie(iCurrentMovie);
+end;
+
+procedure TfrmCinemaBookings.DisplayMovie(iMovie: Integer);
+var
+  i : Integer;
+begin
+  redMovieDescription.Lines.Clear;
+  imgCoverImage.Picture.LoadFromFile(sCurrentDir + '/Images/' + Movies[iMovie].CoverImage);
+  lblMovieTitle.Caption := Movies[iMovie].Name;
+  redMovieDescription.Lines.Add(Movies[iMovie].Description);
+  lblMovieRating.Caption := Movies[iMovie].Rating;
+  cbTime.Items.Clear;
+  cbDate.Items.Clear;
+  for i := 1 to 3 do
+    cbTime.Items.Add(Movies[iMovie].Times[i]);
+  for i := 1 to 3 do
+    cbDate.Items.Add(Movies[iMovie].Dates[i]);
 end;
 
 procedure TfrmCinemaBookings.FormCreate(Sender: TObject);
@@ -120,6 +157,7 @@ begin
         end;
       tblMovies.Next;
     end;
+  iMovieCount := tblMovies.RecordCount; 
 
   imgFeatured.Picture.LoadFromFile('Images/' + Movies[iFeaturedID].CoverImage);
   lblFeaturedMovie.Caption := Movies[iFeaturedID].Name;
@@ -130,15 +168,8 @@ begin
   lblWelcome.Caption := 'Welcome ' + User.Name + '!';
 
   //Load first movie for preview
-  imgCoverImage.Picture.LoadFromFile(sCurrentDir + '/Images/' + Movies[1].CoverImage);
-  lblMovieTitle.Caption := Movies[1].Name;
-  redMovieDescription.Lines.Add(Movies[1].Description);
-  lblMovieRating.Caption := Movies[1].Rating;
-  for i := 1 to 3 do
-    cbTime.Items.Add(Movies[1].Times[i]);
-
-  for i := 1 to 3 do
-    cbDate.Items.Add(Movies[1].Dates[i]);
+  iCurrentMovie := 1;
+  DisplayMovie(iCurrentMovie);
 end;
 
 end.
