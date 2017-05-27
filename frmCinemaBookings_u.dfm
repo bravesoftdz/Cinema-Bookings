@@ -1,7 +1,7 @@
-object Form1: TForm1
+object frmMain: TfrmMain
   Left = 0
   Top = 0
-  Caption = 'Form1'
+  Caption = 'CinemaBookings'
   ClientHeight = 291
   ClientWidth = 633
   Color = clBtnFace

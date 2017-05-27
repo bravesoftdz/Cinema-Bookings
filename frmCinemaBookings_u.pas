@@ -4,10 +4,11 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, dmConnect_u, Data.DB, Vcl.Grids,
+  Vcl.DBGrids;
 
 type
-  TForm1 = class(TForm)
+  TfrmMain = class(TForm)
   private
     { Private declarations }
   public
@@ -15,7 +16,7 @@ type
   end;
 
 var
-  Form1: TForm1;
+  frmMain: TfrmMain;
 
 implementation
 
