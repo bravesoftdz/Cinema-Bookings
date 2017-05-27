@@ -100,7 +100,7 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="frmCinemaBookings_u.pas">
-            <Form>frmMain</Form>
+            <Form>frmCinemaBookings</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="dmConnect_u.pas">

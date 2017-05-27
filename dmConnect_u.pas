@@ -10,6 +10,14 @@ type
     dbConnect: TADOConnection;
     tblUsers: TADOTable;
     dsUsers: TDataSource;
+    dsMovies: TDataSource;
+    dsFeatured: TDataSource;
+    tblMovies: TADOTable;
+    tblMoviesID: TAutoIncField;
+    tblMoviesName: TWideStringField;
+    tblMoviesDescription: TWideMemoField;
+    tblMoviesCoverImage: TWideStringField;
+    tblMoviesRating: TFloatField;
   private
     { Private declarations }
   public
