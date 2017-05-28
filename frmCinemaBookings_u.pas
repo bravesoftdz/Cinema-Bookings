@@ -53,11 +53,31 @@ type
     tblMoviesDates: TWideStringField;
     btnLeft: TButton;
     btnRight: TButton;
+    lblError: TLabel;
+    gbSeats: TGroupBox;
+    sgSeats: TStringGrid;
+    redDisplay: TRichEdit;
+    tblTickets: TADOTable;
+    tblTicketsID: TAutoIncField;
+    tblTicketsUserID: TWideStringField;
+    tblTicketsMovieID: TIntegerField;
+    tblTicketsTime: TWideStringField;
+    tblTicketsDate: TWideStringField;
+    tblTicketsSeats: TWideStringField;
+    edtNumSeats: TEdit;
+    udNumSeats: TUpDown;
+    lblNumSeats: TLabel;
+    gbAccountDetails: TGroupBox;
     procedure FormCreate(Sender: TObject);
     procedure btnMenuViewMoviesClick(Sender: TObject);
     procedure DisplayMovie(iMovie: Integer);
     procedure btnLeftClick(Sender: TObject);
     procedure btnRightClick(Sender: TObject);
+    procedure btnBookClick(Sender: TObject);
+    procedure sgSeatsSelectCell(Sender: TObject; ACol, ARow: Integer;
+      var CanSelect: Boolean);
+    procedure cbDateChange(Sender: TObject);
+    procedure cbTimeChange(Sender: TObject);
   private
     { Private declarations }
   public
@@ -70,10 +90,82 @@ var
   User : TUser;
   FeaturedMovie : TMovie;
   Movies : TMovies;
-  iCurrentMovie, iMovieCount : Integer;
+  iCurrentMovie, iMovieCount,iNumSeats : Integer;
+  arrTickets : array[1..64] of String;
+  bSeatSelected : Boolean;
+const
+  sLetters : String = 'ABCDEFG';
+  rTValue : Real = 55.0;
 implementation
 
 {$R *.dfm}
+
+procedure TfrmCinemaBookings.btnBookClick(Sender: TObject);
+var
+  Bookings : TextFile;
+  i, j : Integer;
+  sRow, sTickets : String;
+begin
+  if NOT((cbTime.ItemIndex = -1) OR (cbDate.ItemIndex = -1) OR (btnBook.Caption = 'Book')) OR NOT(bSeatSelected) then
+    begin
+      lblError.Visible := False;
+      gbMovies.Visible := False;
+      gbSeats.Visible := True;
+      AssignFile(Bookings, sCurrentDir + '/Movies/' + IntToStr(iCurrentMovie) + '/' + IntToStr(cbDate.ItemIndex) + IntToStr(cbTime.ItemIndex) + '_SEATS.txt');
+      Reset(Bookings);
+      btnBook.Caption := 'Book';
+      for i := 1 to 6 do
+        begin
+          sgSeats.Cells[i, 0] := IntToStr(i);
+        end;
+      for i := 1 to 7 do
+        begin
+          sgSeats.Cells[0, i] := sLetters[i];
+        end;
+      for i := 1 to 7 do
+        begin
+          ReadLn(Bookings, sRow);
+          for j := 1 to 6 do
+            begin
+              sgSeats.Cells[j, i] := sRow[j];
+            end;
+        end;
+      sgSeats.DefaultColWidth := 27;
+      sgSeats.DefaultRowHeight := 27;
+    end else
+    begin
+      if btnBook.Caption = 'Book' then
+        begin
+          if NOT(bSeatSelected) then
+            begin
+              ShowMessage('Please select your seats.');
+            end
+            else
+            begin
+              with tblTickets do
+                begin;
+                  Insert;
+                  for i := 1 to iNumSeats do
+                    sTickets := sTickets + arrTickets[i] + ', ';
+                  FieldByName('Seats').Value := sTickets;
+                  FieldByName('UserID').Value := User.ID;
+                  FieldByName('MovieID').Value := iCurrentMovie;
+                  FieldByName('Time').Value := cbTime.Items[cbTime.ItemIndex];
+                  FieldByName('Date').Value := cbDate.Items[cbDate.ItemIndex];
+                  Post;
+                end;
+              gbMovies.Visible := True;
+              gbSeats.Visible := False;
+              btnBook.Caption := 'Proceed to bookings';
+              redDisplay.Lines.Clear();
+            end;
+        end
+        else
+        begin
+          lblError.Visible := True;
+        end;
+    end;
+end;
 
 procedure TfrmCinemaBookings.btnLeftClick(Sender: TObject);
 begin
@@ -94,12 +186,28 @@ begin
   DisplayMovie(iCurrentMovie);
 end;
 
+procedure TfrmCinemaBookings.cbDateChange(Sender: TObject);
+begin
+  if btnBook.Caption = 'Book' then
+    btnBookClick(Self);
+  redDisplay.Lines.Clear();
+  redDisplay.Lines.Add('Your Tickets:');
+end;
+
+procedure TfrmCinemaBookings.cbTimeChange(Sender: TObject);
+begin
+  if btnBook.Caption = 'Book' then
+    btnBookClick(Self);
+  redDisplay.Lines.Clear();
+  redDisplay.Lines.Add('Your Tickets:');
+end;
+
 procedure TfrmCinemaBookings.DisplayMovie(iMovie: Integer);
 var
   i : Integer;
 begin
   redMovieDescription.Lines.Clear;
-  imgCoverImage.Picture.LoadFromFile(sCurrentDir + '/Images/' + Movies[iMovie].CoverImage);
+  imgCoverImage.Picture.LoadFromFile(sCurrentDir + '/Movies/' + IntToStr(iCurrentMovie) + '/' + Movies[iMovie].CoverImage);
   lblMovieTitle.Caption := Movies[iMovie].Name;
   redMovieDescription.Lines.Add(Movies[iMovie].Description);
   lblMovieRating.Caption := Movies[iMovie].Rating;
@@ -126,8 +234,7 @@ begin
   //Set the tables to active
   tblMovies.Active := True;
   tblUsers.Active := True;
-
-  //--tblMovieTimes.Active := True;
+  tblTickets.Active := True;
 
   //Get the users details and create the user class
   tblUsers.Filtered := True;
@@ -157,9 +264,9 @@ begin
         end;
       tblMovies.Next;
     end;
-  iMovieCount := tblMovies.RecordCount; 
+  iMovieCount := tblMovies.RecordCount;
 
-  imgFeatured.Picture.LoadFromFile('Images/' + Movies[iFeaturedID].CoverImage);
+  imgFeatured.Picture.LoadFromFile(sCurrentDir + '/Movies/' + IntToStr(iFeaturedID) + '/' + Movies[iFeaturedID].CoverImage);
   lblFeaturedMovie.Caption := Movies[iFeaturedID].Name;
   redFeaturedMovie.Lines.Add(Movies[iFeaturedID].Description);
   lblFeaturedRating.Caption := Movies[iFeaturedID].Rating;
@@ -170,6 +277,68 @@ begin
   //Load first movie for preview
   iCurrentMovie := 1;
   DisplayMovie(iCurrentMovie);
+  iNumSeats := 0;
+end;
+
+procedure TfrmCinemaBookings.sgSeatsSelectCell(Sender: TObject; ACol,
+  ARow: Integer; var CanSelect: Boolean);
+var
+  i : Integer;
+  sTickets : String;
+  bIsBooked : Boolean;
+begin
+  if bSeatSelected then
+    begin
+      bSeatSelected := False;
+      btnBookClick(Self);
+    end;
+  iNumSeats := StrToInt(edtNumSeats.Text);
+  if (iNumSeats + ACol) > 7 then
+    begin
+      bSeatSelected := False;
+      btnBookClick(Self);
+      ShowMessage('Sorry but you cant book that amount of seats there.');
+      redDisplay.Lines.Clear();
+      redDisplay.Lines.Add('Your Tickets: ');
+      bSeatSelected := False;
+    end
+    else
+    begin
+      for i := ACol to (iNumSeats + ACol) - 1 do
+        begin
+          if (sgSeats.Cells[i, ARow] = 'x') then
+          begin
+            ShowMessage('Sorry but this seat(s) is already booked.');
+            bIsBooked := True;
+            redDisplay.Lines.Clear();
+            redDisplay.Lines.Add('Your Tickets: ');
+            bSeatSelected := False;
+          end;
+        end;
+      if NOT(bIsBooked) then
+        begin
+          for i := ACol to (iNumSeats + ACol) - 1 do
+            begin
+              if NOT(sgSeats.Cells[i, ARow] = 'x') then
+                begin
+                  sgSeats.Cells[i, ARow] := 'S';
+                  arrTickets[i] := IntToStr(i) + sLetters[ARow];
+                end
+                else
+                begin
+                  ShowMessage('Sorry but this seat(s) is already booked.');
+                  redDisplay.Lines.Clear();
+                  redDisplay.Lines.Add('Your Tickets: ');
+                end;
+            end;
+          redDisplay.Lines.Clear();
+          redDisplay.Lines.Add('Your Tickets: ' + FloatToStrF(rTValue*iNumSeats, ffCurrency, 8, 2));
+          for i := ACol to (iNumSeats + ACol) - 1 do
+            sTickets := sTickets + arrTickets[i] + ', ';
+          redDisplay.Lines.Add(sTickets);
+          bSeatSelected := True;
+        end;
+    end;
 end;
 
 end.
