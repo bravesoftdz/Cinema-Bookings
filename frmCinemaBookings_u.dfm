@@ -3,7 +3,7 @@ object frmCinemaBookings: TfrmCinemaBookings
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Cinema Bookings'
-  ClientHeight = 250
+  ClientHeight = 246
   ClientWidth = 606
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -19,14 +19,12 @@ object frmCinemaBookings: TfrmCinemaBookings
     Left = 0
     Top = 0
     Width = 606
-    Height = 250
-    ActivePage = tsAccount
+    Height = 246
+    ActivePage = tsUpcoming
     Align = alClient
     TabOrder = 0
-    ExplicitHeight = 254
     object tsDashboard: TTabSheet
       Caption = 'Dashboard'
-      ExplicitHeight = 223
       object lblWelcome: TLabel
         Left = 3
         Top = 3
@@ -211,11 +209,10 @@ object frmCinemaBookings: TfrmCinemaBookings
     object tsAccount: TTabSheet
       Caption = 'My Account'
       ImageIndex = 1
-      ExplicitHeight = 223
       object gbAccountDetails: TGroupBox
-        Left = 3
+        Left = 0
         Top = 3
-        Width = 294
+        Width = 201
         Height = 213
         Caption = 'Account Details'
         Font.Charset = DEFAULT_CHARSET
@@ -225,12 +222,167 @@ object frmCinemaBookings: TfrmCinemaBookings
         Font.Style = []
         ParentFont = False
         TabOrder = 0
+        object lblAccountName: TLabel
+          Left = 35
+          Top = 32
+          Width = 38
+          Height = 16
+          Alignment = taRightJustify
+          Caption = 'Name:'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+        end
+        object lblAccountSurname: TLabel
+          Left = 16
+          Top = 54
+          Width = 57
+          Height = 16
+          Alignment = taRightJustify
+          Caption = 'Surname:'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+        end
+        object lblAccountEmail: TLabel
+          Left = 37
+          Top = 76
+          Width = 36
+          Height = 16
+          Alignment = taRightJustify
+          Caption = 'Email:'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+        end
+        object lblAccountPassword: TLabel
+          Left = 13
+          Top = 98
+          Width = 60
+          Height = 16
+          Alignment = taRightJustify
+          Caption = 'Password:'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+        end
+        object edtAccountName: TEdit
+          Left = 79
+          Top = 32
+          Width = 110
+          Height = 21
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 0
+        end
+        object edtAccountSurname: TEdit
+          Left = 79
+          Top = 54
+          Width = 110
+          Height = 21
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 1
+        end
+        object edtAccountEmail: TEdit
+          Left = 79
+          Top = 76
+          Width = 110
+          Height = 21
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 2
+        end
+        object edtAccountPassword: TEdit
+          Left = 79
+          Top = 98
+          Width = 110
+          Height = 21
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 3
+        end
+        object btnAccountUpdate: TButton
+          Left = 79
+          Top = 120
+          Width = 110
+          Height = 25
+          Caption = 'Update'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 4
+        end
+      end
+      object gbTickets: TGroupBox
+        Left = 207
+        Top = 3
+        Width = 388
+        Height = 213
+        Caption = 'Your Tickets'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -17
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 1
+        object redTickets: TRichEdit
+          Left = 3
+          Top = 25
+          Width = 382
+          Height = 185
+          BorderStyle = bsNone
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          HideScrollBars = False
+          Lines.Strings = (
+            'redTickets')
+          ParentFont = False
+          ReadOnly = True
+          ScrollBars = ssVertical
+          TabOrder = 0
+          Zoom = 100
+        end
       end
     end
     object tsUpcoming: TTabSheet
       Caption = 'Upcomming'
       ImageIndex = 2
-      ExplicitHeight = 223
       object gbMovies: TGroupBox
         Left = 3
         Top = 3
@@ -428,19 +580,20 @@ object frmCinemaBookings: TfrmCinemaBookings
           Left = 136
           Top = 92
           Width = 27
-          Height = 27
+          Height = 29
           ReadOnly = True
           TabOrder = 3
-          Text = '0'
+          Text = '1'
         end
         object udNumSeats: TUpDown
           Left = 163
           Top = 92
           Width = 20
-          Height = 27
+          Height = 29
           Associate = edtNumSeats
           Min = 1
           Max = 6
+          Position = 1
           TabOrder = 4
         end
       end
@@ -477,6 +630,23 @@ object frmCinemaBookings: TfrmCinemaBookings
           ParentFont = False
           TabOrder = 0
           OnSelectCell = sgSeatsSelectCell
+          ColWidths = (
+            22
+            22
+            22
+            22
+            22
+            22
+            22)
+          RowHeights = (
+            22
+            22
+            22
+            22
+            22
+            22
+            22
+            22)
         end
         object redDisplay: TRichEdit
           Left = 168
@@ -506,13 +676,11 @@ object frmCinemaBookings: TfrmCinemaBookings
     TabOrder = 1
   end
   object dbConnect: TADOConnection
-    Connected = True
     ConnectionString = 
       'Provider=Microsoft.Jet.OLEDB.4.0;Data Source=Z:\Projects\PAT 201' +
-      '7\Phase 3\Cinema-Bookings\CinemaBookings.mdb;Mode=ReadWrite;Pers' +
-      'ist Security Info=False'
+      '7\Phase 3\Cinema-Bookings\Win32\Debug\CinemaBookings.mdb;Mode=Re' +
+      'adWrite;Persist Security Info=False'
     LoginPrompt = False
-    Mode = cmReadWrite
     Provider = 'Microsoft.Jet.OLEDB.4.0'
     Left = 404
     Top = 299
@@ -583,6 +751,36 @@ object frmCinemaBookings: TfrmCinemaBookings
       Size = 255
     end
     object tblTicketsSeats: TWideStringField
+      FieldName = 'Seats'
+      Size = 255
+    end
+  end
+  object qryTickets: TADOQuery
+    Connection = dbConnect
+    CursorType = ctStatic
+    Parameters = <>
+    Left = 220
+    Top = 339
+    object qryTicketsID: TAutoIncField
+      FieldName = 'ID'
+      ReadOnly = True
+    end
+    object qryTicketsUserID: TWideStringField
+      FieldName = 'UserID'
+      Size = 255
+    end
+    object qryTicketsMovieID: TIntegerField
+      FieldName = 'MovieID'
+    end
+    object qryTicketsTime: TWideStringField
+      FieldName = 'Time'
+      Size = 255
+    end
+    object qryTicketsDate: TWideStringField
+      FieldName = 'Date'
+      Size = 255
+    end
+    object qryTicketsSeats: TWideStringField
       FieldName = 'Seats'
       Size = 255
     end

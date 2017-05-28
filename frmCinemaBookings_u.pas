@@ -68,6 +68,24 @@ type
     udNumSeats: TUpDown;
     lblNumSeats: TLabel;
     gbAccountDetails: TGroupBox;
+    lblAccountName: TLabel;
+    lblAccountSurname: TLabel;
+    lblAccountEmail: TLabel;
+    lblAccountPassword: TLabel;
+    edtAccountName: TEdit;
+    edtAccountSurname: TEdit;
+    edtAccountEmail: TEdit;
+    edtAccountPassword: TEdit;
+    btnAccountUpdate: TButton;
+    gbTickets: TGroupBox;
+    qryTickets: TADOQuery;
+    qryTicketsID: TAutoIncField;
+    qryTicketsUserID: TWideStringField;
+    qryTicketsMovieID: TIntegerField;
+    qryTicketsTime: TWideStringField;
+    qryTicketsDate: TWideStringField;
+    qryTicketsSeats: TWideStringField;
+    redTickets: TRichEdit;
     procedure FormCreate(Sender: TObject);
     procedure btnMenuViewMoviesClick(Sender: TObject);
     procedure DisplayMovie(iMovie: Integer);
@@ -78,6 +96,7 @@ type
       var CanSelect: Boolean);
     procedure cbDateChange(Sender: TObject);
     procedure cbTimeChange(Sender: TObject);
+    procedure DisplayTickets();
   private
     { Private declarations }
   public
@@ -106,7 +125,7 @@ var
   i, j : Integer;
   sRow, sTickets : String;
 begin
-  if NOT((cbTime.ItemIndex = -1) OR (cbDate.ItemIndex = -1) OR (btnBook.Caption = 'Book')) OR NOT(bSeatSelected) then
+  if NOT((cbTime.ItemIndex = -1) OR (cbDate.ItemIndex = -1) OR (btnBook.Caption = 'Book')) OR (NOT(bSeatSelected) AND (btnBook.Caption = 'Book')) then
     begin
       lblError.Visible := False;
       gbMovies.Visible := False;
@@ -219,9 +238,34 @@ begin
     cbDate.Items.Add(Movies[iMovie].Dates[i]);
 end;
 
+procedure TfrmCinemaBookings.DisplayTickets;
+var
+  i : Integer;
+begin
+  with redTickets do
+    begin
+      Lines.Clear;
+      Paragraph.TabCount := 5;
+      Paragraph.Tab[2] := 1;
+      Paragraph.Tab[3] := 20;
+      Paragraph.Tab[4] := 130;
+      Lines.Add('No' + #9 + 'Movie' + #9 + 'Seats' + #9 + 'Date/Time');
+    end;
+  qryTickets.SQL.Clear;
+  qryTickets.SQL.Add('SELECT * FROM Tickets WHERE UserID = ''' + User.ID + '''');
+  qryTickets.Active := True;
+  for i := 1 to qryTickets.RecordCount do
+    begin
+      with qryTickets do
+        begin
+          redTickets.Lines.Add(IntToSTr(i) + ':' + #9 + Movies[StrToInt(FieldByName('MovieID').Value)].Name + #9 + FieldByName('Seats').Value + #9 + FieldByName('Date').Value + ' - ' + FieldByName('Time').Value);
+        end;
+    end;
+end;
+
 procedure TfrmCinemaBookings.FormCreate(Sender: TObject);
 var
-  sUserID : String;
+  sUserID, sDBConnection : String;
   i, iFeaturedID : Integer;
 begin
   //TEST VARIABLES
@@ -232,6 +276,9 @@ begin
   sCurrentDir := GetCurrentDir;
 
   //Set the tables to active
+  sDBConnection := 'Provider=Microsoft.Jet.OLEDB.4.0;Data Source=' + sCurrentDir + '\CinemaBookings.mdb;Mode=ReadWrite;Persist Security Info=False';
+  dbConnect.ConnectionString := sDBConnection;
+  dbConnect.Connected := True;
   tblMovies.Active := True;
   tblUsers.Active := True;
   tblTickets.Active := True;
@@ -278,6 +325,7 @@ begin
   iCurrentMovie := 1;
   DisplayMovie(iCurrentMovie);
   iNumSeats := 0;
+  DisplayTickets();
 end;
 
 procedure TfrmCinemaBookings.sgSeatsSelectCell(Sender: TObject; ACol,
